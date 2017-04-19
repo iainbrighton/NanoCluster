@@ -1,6 +1,6 @@
-# NanoClusters DSC Resources
+# NanoCluster DSC Resources
 
-The `NanoClusters` composite DSC resources provide a common set of DSC resources that simplify the deployment of a Nano
+The `NanoCluster` composite DSC resources provide a common set of DSC resources that simplify the deployment of a Nano
 Server Hyper-Converged Cluster. As the native Windows PowerShell `FailoverClusters` cmdlets are not (yet) available on
 Nano server, the xFailoverCluster DSC resources cannot be used as they do not support remote deployment and/or
 configuration.
