@@ -26,15 +26,11 @@ configuration NanoClusterS2DVolume {
         [System.Management.Automation.CredentialAttribute()]
         $Credential,
 
-        ## Specifies the size of the volume - in bytes - to create.
+        ## Specifies the size of the volume - in bytes - to create. If not specified or a size of
+        ## zero bytes is defined, all available space be used.
         [Parameter()]
         [System.UInt64]
         $Size,
-
-        ## Indicates that this resource creates the largest volume possible.
-        [Parameter()]
-        [System.Boolean]
-        $UseMaximumSize,
 
         ## Specifies the file system to use for the volume. Defaults to CSVFS_ReFS.
         [Parameter()]
@@ -129,7 +125,27 @@ configuration NanoClusterS2DVolume {
 
             try
             {
+                $newVolumeParams = @{
+                    StoragePoolFriendlyName = $using:StoragePoolFriendlyName;
+                    FriendlyName = $using:FriendlyName;
+                    FileSystem = $using:FileSystem;
+                    PhysicalDiskRedundancy = $using:PhysicalDiskRedundancy;
+                    ProvisioningType = $using:ProvisioningType;
+                    ResiliencySettingName = $using:ResiliencySettingName;
+                    MediaType = $using:MediaType;
+                    CimSession = $using:ClusterName;
+                }
 
+                if ($using:Size -eq 0)
+                {
+                    $newVolumeParams['UseMaximumSize'] = $true;
+                }
+                else
+                {
+                    $newVolumeParams['Size'] = $using:Size;
+                }
+
+                New-Volume @newVolumeParams;
             }
             catch
             {

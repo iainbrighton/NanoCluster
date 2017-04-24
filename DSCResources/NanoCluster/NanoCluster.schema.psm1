@@ -33,7 +33,7 @@ configuration NanoCluster {
 
         GetScript = {
 
-            if (-not (Get-Module -Name FailoverClusters -ListAvailable))
+            if (-not (Get-Module -Name FailoverClusters -ListAvailable 4>$null))
             {
                 throw ("Missing 'FailoverClusters' module.");
             }
@@ -48,7 +48,7 @@ configuration NanoCluster {
 
             try
             {
-                if (-not (Get-Module -Name FailoverClusters -ListAvailable))
+                if (-not (Get-Module -Name FailoverClusters -ListAvailable 4>$null))
                 {
                     throw ("Missing 'FailoverClusters' module.");
                 }
@@ -56,7 +56,7 @@ configuration NanoCluster {
                 {
                     Write-Warning -Message ("Cluster name should be specified as a FQDN");
                 }
-
+                
                 $cluster = Get-Cluster -Name $using:ClusterName -ErrorAction SilentlyContinue;
 
                 if ($null -eq $cluster)
@@ -66,27 +66,36 @@ configuration NanoCluster {
                 }
 
                 $isCompliant = $true;
-                $clusterNodes = Get-ClusterNode -Cluster $cluster | Select -ExpandProperty Name;
+                $clusterNodes = Get-ClusterNode -InputObject $cluster | Select-Object -ExpandProperty Name;
+                ## Get-ClusterNode returns NetBIOS names so strip supplied nodes' domain names
+                $clusterNetBIOSNodes = $using:ClusterNode | ForEach-Object { $_.Split('.')[0] };
 
                 foreach ($node in $clusterNodes)
                 {
-                    if ($node -notin $using:ClusterNode)
+                    if ($node -notin $clusterNetBIOSNodes)
                     {
                         Write-Verbose -Message ("Unexpected cluster node '{0}'." -f $node);
                         $isCompliant = $false;
                     }
                 }
 
-                foreach ($node in $using:ClusterNode)
+                foreach ($node in $clusterNetBIOSNode)
                 {
                     if ($node -notin $ClusterNodes)
                     {
                         Write-Verbose -Message ("Missing cluster node '{0}'." -f $node);
                         $isCompliant = $false;
                     }
-
                 }
 
+                if ($isCompliant)
+                {
+                    Write-Verbose -Message ("Cluster '{0}' is in the desired state." -f $using:ClusterName);
+                }
+                else
+                {
+                    Write-Verbose -Message ("Cluster '{0}' is NOT in the desired state." -f $using:ClusterName);
+                }
                 return $isCompliant;
 
             }
@@ -105,24 +114,28 @@ configuration NanoCluster {
 
                 if ($null -eq $cluster)
                 {
-                    Write-Verbose ("Creating cluster '{0}'." -f $using:ClusterName);
-                    $cluster = New-Cluster -Name $using:ClusterName -StaticAddress $using:StaticAddress -Node $using:ClusterNode -NoStorage;
+                    ## Cluster cannot be created with a FQDN?!
+                    $clusterNetBIOSName = ($using:ClusterName).Split('.')[0];
+                    Write-Verbose ("Creating cluster '{0}'." -f $clusterNetBIOSName);
+                    $cluster = New-Cluster -Name $clusterNetBIOSName -StaticAddress $using:StaticAddress -Node $using:ClusterNode -NoStorage;
                 }
 
-                $clusterNodes = Get-ClusterNode -Cluster $cluster | Select -ExpandProperty Name;
+                $clusterNodes = Get-ClusterNode -InputObject $cluster | Select-Object -ExpandProperty Name;
+                ## Get-ClusterNode returns NetBIOS names so strip supplied nodes' domain names
+                $clusterNetBIOSNodes = $using:ClusterNode | ForEach-Object { $_.Split('.')[0] };
 
-                foreach ($node in $using:ClusterNode)
+                foreach ($node in $clusterNodes)
                 {
-                    if ($node -notin $ClusterNodes)
+                    if ($node -notin $clusterNetBIOSNodes)
                     {
                         Write-Verbose ("Adding cluster node '{0}'." -f $node);
                         Add-ClusterNode -Cluster $cluster -Name $node -NoStorage;
                     }
                 }
 
-                foreach ($node in $clusterNodes)
+                foreach ($node in $clusterNetBIOSNode)
                 {
-                    if ($node -notin $using:ClusterNode)
+                    if ($node -notin $ClusterNodes)
                     {
                         Write-Verbose ("Evicting cluster node '{0}'." -f $node);
                         Remove-ClusterNode -Cluster $cluster -Name $node -Force;
