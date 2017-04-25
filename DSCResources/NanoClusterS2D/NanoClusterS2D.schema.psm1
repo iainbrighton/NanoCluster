@@ -47,7 +47,7 @@ configuration NanoClusterS2D {
 
         GetScript = {
 
-            if (-not (Get-Module -Name FailoverClusters -ListAvailable))
+            if (-not (Get-Module -Name FailoverClusters -ListAvailable 4>$null))
             {
                 throw ("Missing 'FailoverClusters' module.");
             }
@@ -62,7 +62,7 @@ configuration NanoClusterS2D {
 
             try
             {
-                if (-not (Get-Module -Name FailoverClusters -ListAvailable))
+                if (-not (Get-Module -Name FailoverClusters -ListAvailable 4>$null))
                 {
                     throw ("Missing 'FailoverClusters' module.");
                 }

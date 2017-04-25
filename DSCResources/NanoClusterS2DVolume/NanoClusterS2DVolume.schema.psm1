@@ -77,7 +77,7 @@ configuration NanoClusterS2DVolume {
 
         GetScript = {
 
-            if (-not (Get-Module -Name Storage -ListAvailable))
+            if (-not (Get-Module -Name Storage -ListAvailable 4>$null))
             {
                 throw ("Missing PowerShell 'Storage' module.");
             }
@@ -92,7 +92,7 @@ configuration NanoClusterS2DVolume {
 
             try
             {
-                if (-not (Get-Module -Name Storage -ListAvailable))
+                if (-not (Get-Module -Name Storage -ListAvailable 4>$null))
                 {
                     throw ("Missing PowerShell 'Storage' module.");
                 }
