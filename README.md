@@ -45,3 +45,12 @@ Creates a Storage Spaces Direct (S2D) storage volume - remotely.
 * **[String] ProvisioningType** (Write): Specifies the type of provisioning. Specify Fixed for storage spaces that use storage tiers or a clustered storage pool. { Fixed }. Defaults to Fixed.
 * **[String] ResiliencySettingName** (Write): By default, when you specify Mirror, Storage Spaces creates a two-way mirror, and when you specify Parity, Storage Spaces creates a single-parity space. { Mirror | Parity }. Defaults to Mirror.
 * **[String] MediaType** (Write): Specifies the media type of the storage tier. Use SCM for storage-class memory such as NVDIMMs { HDD | SSD | CSM }. Defaults to HDD.
+
+### WaitForNanoCluster
+
+Waits for a failover cluster to become available.
+
+* **[String] ClusterName** (Required): Name of the failover cluster/node (FQDN) to wait for.
+* **[PSCredential] Credential** (Required): Credential used to connect to the cluster.
+* **[Int32] RetryInterval** (Write): Specifies the number of seconds to wait between retry attempts. Defaults to 15 seconds.
+* **[Int32] RetryCount** (Write): Specifies the number of connections attempts to wait for the cluster to become available. Defaults to 20 retries.
