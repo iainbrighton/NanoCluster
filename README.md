@@ -52,5 +52,5 @@ Waits for a failover cluster to become available.
 
 * **[String] ClusterName** (Required): Name of the failover cluster/node (FQDN) to wait for.
 * **[PSCredential] Credential** (Required): Credential used to connect to the cluster.
-* **[Int32] RetryInterval** (Write): Specifies the number of seconds to wait between retry attempts. Defaults to 15 seconds.
-* **[Int32] RetryCount** (Write): Specifies the number of connections attempts to wait for the cluster to become available. Defaults to 20 retries.
+* **[UInt32] RetryInterval** (Write): Specifies the number of seconds to wait between retry attempts. Defaults to 15 seconds.
+* **[UInt32] RetryCount** (Write): Specifies the number of connections attempts to wait for the cluster to become available. Defaults to 20 retries.

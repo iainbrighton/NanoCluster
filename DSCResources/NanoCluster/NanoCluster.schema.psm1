@@ -5,19 +5,22 @@ configuration NanoCluster {
 #>
     param (
         ## Name (FQDN) of the failover cluster to create.
-        [Parameter(Mandatory)]
-        [System.String] $ClusterName,
+        [Parameter(Mandatory = $true)]
+        [System.String]
+        $ClusterName,
 
         ## Static IP address to assign to the cluster.
-        [Parameter(Mandatory)]
-        [System.String] $StaticAddress,
+        [Parameter(Mandatory = $true)]
+        [System.String]
+        $StaticAddress,
 
         ## One or more cluster nodes (FQDNs) to add to the cluster.
-        [Parameter(Mandatory)]
-        [System.String[]] $ClusterNode,
+        [Parameter(Mandatory = $true)]
+        [System.String[]]
+        $ClusterNode,
 
         ## Credential used to create the cluster and communicate with the cluster nodes.
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.CredentialAttribute()]
         $Credential

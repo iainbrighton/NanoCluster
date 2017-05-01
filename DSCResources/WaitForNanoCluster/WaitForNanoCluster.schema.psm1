@@ -5,17 +5,22 @@ configuration WaitForNanoCluster {
 #>
     param (
         ## Name (FQDN) of the failover cluster to create.
-        [Parameter(Mandatory)]
-        [System.String] $ClusterName,
+        [Parameter(Mandatory = $true)]
+        [System.String]
+        $ClusterName,
 
         ## Retry interval in seconds
-        [System.Int32] $RetryInterval = 15,
+        [Parameter()]
+        [System.UInt32]
+        $RetryInterval = 15,
         
         ## Retry count
-        [System.Int32] $RetryCount = 20,
+        [Parameter()]
+        [System.UInt32]
+        $RetryCount = 20,
 
         ## Credential used to create the cluster and communicate with the cluster nodes.
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.CredentialAttribute()]
         $Credential

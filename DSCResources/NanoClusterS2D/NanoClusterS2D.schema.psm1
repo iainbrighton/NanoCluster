@@ -5,11 +5,12 @@ configuration NanoClusterS2D {
 #>
     param (
         ## Name of the failover cluster/node (FQDN) to enable S2D on.
-        [Parameter(Mandatory)]
-        [System.String] $ClusterName,
+        [Parameter(Mandatory = $true)]
+        [System.String]
+        $ClusterName,
 
         ## Credential used to create the cluster
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.CredentialAttribute()]
         $Credential,
